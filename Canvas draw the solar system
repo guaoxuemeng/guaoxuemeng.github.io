@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+
+		<meta name="keywords" content="这是关键字" />
+		<meta name="Description" content="这里是广告位" />
+		<meta name="description" content="这里是广告放置区" />
+		<title></title>
+		<style type="text/css">
+			canvas {
+				background: #000;
+			}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="canvas" width="900" height="900">您的浏览器不支持canvas 请升级您的浏览器</canvas>
+		<!--<input type="file" capture="camera" accept="image/*"/>-->
+		<input type="file" capture="camera" accept="image/*" name="file" onchange/>
+		<script type="text/javascript">
+			var can = document.querySelector('#canvas');
+			console.dir(can)
+			var ctx = can.getContext("2d"); //创建2D绘制环境
+			//封装绘制路径方法
+			function drawTruck(){
+				var i;
+				ctx.strokeStyle = "#fff";
+				for(i = 0; i < 8; i++) {
+					ctx.beginPath();
+					ctx.arc(450, 450, (i + 1) * 50, 0, Math.PI * 2, true);
+					ctx.stroke();
+				}
+			}
+			drawTruck(); //绘制路径
+			//绘制星体方法
+			function Star(x, y, r, cycle, sColor, eColor) {
+				this.x = x;
+				this.y = y;
+				this.r = r;
+				this.cycle = cycle;
+				this.sColor = sColor;
+				this.eColor = eColor;
+				this.color = null;
+				this.deg = 0;
+				this.time = 0; //定义旋转速度
+				this.draw = function() {
+					ctx.save(); //保存当前画布
+					//改变画布中心
+					ctx.translate(450, 450);
+					//将星系的公转周期转化成为度数
+					this.deg = 360 / this.cycle;
+					//旋转绘图
+					ctx.rotate(this.time * Math.PI * this.deg / 180); //弧度公式  Math.PI*角度/180
+					ctx.beginPath(); //开始路径
+					ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, true);
+					this.color = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r); //创建径向渐变
+					this.color.addColorStop(0, this.sColor); //设置渐变起始位置
+					this.color.addColorStop(1, this.eColor);
+					ctx.fillStyle = this.color;
+					ctx.fill();
+					ctx.restore();
+					this.time+=0.5;
+				};
+			}
+
+			//实例化星体对象
+			var sun = new Star(0, 0, 30, 0, "#f00", "#ff0"),
+				me = new Star(50, 0, 10, 88, "#A69697", "#5C3E40"),
+				ve = new Star(100, 0, 20, 225, "#C4BBAC", "#1F1315"),
+				ear = new Star(150, 0,20, 365, "#78B1E8", "#050C12"),
+				mar = new Star(200, 0,15, 687, "#CEC9B6", "#76422D"),
+				ju = new Star(250, 0,25, 11.8, "#C0A48E", "#322222"),
+				sa = new Star(300, 0,23,29.5,"#f7f9e3" ,"#5c4533"),
+				ur = new Star(350,0,21,84,"#a7e1e5","#19243a"),
+				ne = new Star(400,0,20,164.8,"#0661b2","#1e3b73");
+			//运动函数
+			function Move() {
+				ctx.clearRect(0,0,900,900);
+				drawTruck();
+				sun.draw();
+				me.draw();
+				ve.draw();
+				ear.draw();
+				mar.draw();
+				ju.draw();
+				sa.draw();
+				ur.draw();
+				ne.draw();
+			};
+//			创建定时器
+			setInterval(Move,80);
+		</script>
+	</body>
+
+</html>
